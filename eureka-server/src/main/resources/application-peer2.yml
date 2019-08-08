@@ -1,0 +1,15 @@
+server:
+  port: 2222  #服务端口号
+eureka:
+  client:
+    service-url:
+      #相互注册，组成一个集群，实现高可用
+      defaultZone: http://peer1:1111/eureka/
+  instance:
+    #主机名
+    hostname: peer2
+spring:
+  application:
+    #服务名称
+    name: eureka-peer-server
+

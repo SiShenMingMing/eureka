@@ -1,0 +1,59 @@
+server:
+  port: 8002
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: customer_route
+          uri: lb://GATEWAY-SERVICE
+          predicates:
+            - Path= /api/**
+          filters:
+            - StripPrefix=1
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: forward:/fallback
+        - id: requestratelimiter_route
+          uri: lb://GATEWAY-SERVICE
+          predicates:
+            - Method=GET
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+                key-resolver: "#{@uriKeyResolver}"
+  redis:
+    host: localhost
+    port: 6379
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://peer1:1111/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
+    org.springframework.http.server.reactive: debug
+    org.springframework.web.reactive: debug
+    reactor.ipc.netty: debug
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+ command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000

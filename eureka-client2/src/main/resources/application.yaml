@@ -1,0 +1,13 @@
+server:
+  port: 7777
+eureka:
+  client:
+    service-url:
+      defaultZone: http://peer1:1111/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+spring:
+  application:
+    name: eureka-peer-client2
+
