@@ -14,24 +14,20 @@ spring:
           uri: lb://GATEWAY-SERVICE
           predicates:
             - Path= /api/**
+            - Method=GET
           filters:
             - StripPrefix=1
             - name: Hystrix
               args:
                 name: fallbackcmd
                 fallbackUri: forward:/fallback
-        - id: requestratelimiter_route
-          uri: lb://GATEWAY-SERVICE
-          predicates:
-            - Method=GET
-          filters:
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.replenishRate: 1
-                redis-rate-limiter.burstCapacity: 1
-                key-resolver: "#{@uriKeyResolver}"
-  redis:
-    host: localhost
+                redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充速率
+                redis-rate-limiter.burstCapacity: 2 #令牌桶总容量
+                key-resolver: "#{@remoteAddrKeyResolver}" #bean对象的名字，从spring容器中获取
+ redis:
+    host: 127.0.0.1
     port: 6379
 eureka:
   instance:
