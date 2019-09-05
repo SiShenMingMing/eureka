@@ -26,7 +26,7 @@ spring:
                 redis-rate-limiter.replenishRate: 1 #令牌桶每秒填充速率
                 redis-rate-limiter.burstCapacity: 2 #令牌桶总容量
                 key-resolver: "#{@remoteAddrKeyResolver}" #bean对象的名字，从spring容器中获取
- redis:
+  redis:
     host: 127.0.0.1
     port: 6379
 eureka:
