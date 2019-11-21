@@ -13,10 +13,15 @@ spring:
  cloud:
   config:
    server:
-    git:
-     uri: https://github.com/SiShenMingMing/config.git
-     username: sishenmingming
-     password: 5564100.jwt
-     searchPaths: '{profile}'
-   label: master
+#    native:
+#     search-locations: classpath:/config
+     git:
+#     #可以配置git地址、svn地址、本地地址
+      uri: https://github.com/zuowj/learning-demos
+      search-paths: config
+      default-label: master
+#     searchPaths: '{profile}'
+#   label: master
+# profiles:
+#  active: native
 
