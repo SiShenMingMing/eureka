@@ -17,8 +17,8 @@ spring:
 #     search-locations: classpath:/config
      git:
 #     #可以配置git地址、svn地址、本地地址
-      uri: https://github.com/zuowj/learning-demos
-      search-paths: config
+      uri: https://rdc.hand-china.com/gitlab/15433/config1314.git
+#      search-paths: config
       default-label: master
 #     searchPaths: '{profile}'
 #   label: master

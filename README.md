@@ -1,10 +1,10 @@
 # Eureka项目布置的流程 #
 ## 1、环境准备
 
-**1.1本地环境准备**
+### **1.1本地环境准备**
 
 （1）确保本地已经安装好mvn仓库，如果没有安装，到官网进行下载https://maven.apache.org/download.cgi
-![](C:\Users\t460-14\Desktop\eureka图片\安装maven仓库.jpg)
+
 
 下载完成之后配置C:\Program Files\apache-maven-3.5.4\conf路径下的settings.xml文件。
 
@@ -27,7 +27,7 @@ settings.xml文件需要配置的地方有三个，本地仓库地址、镜像�
 </mirror>
 ```
 
-**1.2idea环境准备**
+### **1.2idea环境准备**
 
 由于笔者使用的是idea工具进行的开发设计，所以这里只讲一下idea的环境准备。
 
@@ -45,7 +45,7 @@ user settings file里面填的是本地的settings.xml地址，local repository�
 
 eureka的整体框架图如下：
 
-![](C:\Users\t460-14\Desktop\学习用\eureka.png)**2.1搭建主框架**
+### ![](C:\Users\t460-14\Desktop\学习用\eureka.png)**2.1搭建主框架**
 
 首先建立一个maven项目，流程如下图：
 
@@ -57,7 +57,7 @@ eureka的整体框架图如下：
 
 至此eureka的主框架就建立好了，剩下的所有的子module都是建立在这个里面的。
 
-**2.2搭建eureka注册中心**
+### **2.2搭建eureka注册中心**
 
 建好的maven项目上右键-----》new-------》Module
 
@@ -144,7 +144,7 @@ spring:
 
 注册中心就搭建成功了。接下来搭建服务的提供者。
 
-**2.3搭建服务提供者**
+### **2.3搭建服务提供者**
 
 服务的提供者其实就是向eureka注册中心进行注册的服务，可以看作是一个个的app。
 
@@ -294,7 +294,23 @@ public class HelloController {
 
 ![1565235755172](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1565235755172.png)
 
+如果想注册到eureka中的是ip，那么在配置文件中需要：
 
+```bash
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+```
+
+还需要添加相关依赖：
+
+```xml
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+        </dependency>
+```
 
 访问地址可以看到controller里面的内容。
 
@@ -302,7 +318,7 @@ public class HelloController {
 
 至此，服务的提供者就搭建好了。
 
-**2.4搭建服务消费者**
+### **2.4搭建服务消费者**
 
 服务的消费者有两种实现方式，一种是ribbon，一种是feign。由于feign已经集成了ribbon，所以这里就使用feign的方式来建立消费者。
 
@@ -619,7 +635,7 @@ eureka:
 
 熔断的部分有两处，一处是gateway访问consumer的时候，一处是consumer访问service的时候。
 
-**4.1 consumer访问service时的熔断**
+### **4.1 consumer访问service时熔断**
 
 用到feign的熔断方法。
 
@@ -699,7 +715,7 @@ hystrix:
 
 ![1565247225577](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1565247225577.png)
 
-**4.2 gateway访问consumer时的熔断**
+### **4.2 gateway访问consumer熔断**
 
 gateway到consumer的熔断，需要在gateway的配置文件中加入以下的配置：
 
@@ -774,7 +790,7 @@ public class FallBackController{
 
 ![1565247625592](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1565247625592.png)
 
-4.**3 限流**
+### **4.3 限流**
 
 ###### 计数器算法
 
@@ -983,6 +999,8 @@ hystrix:
 
 ```
 
+#### 4.3.1JMeter压测
+
 通过JMeter的压力测试可以清楚的看到
 
 ![1567582778042](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1567582778042.png)
@@ -993,10 +1011,53 @@ hystrix:
 
 显示429，说明限流成功。
 
-
+#### 4.3.2 gateway基于redis的限流
 
 在redis的界面上面，可以看到：
 
 ![1567582894459](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1567582894459.png)
 
 说明，gateway的限流是基于Redis的限流。
+
+## 5、部署spring cloud config
+
+config的类型有：spring cloud config 、apollo、alibaba nacos
+
+****
+
+### 5.1部署及说明
+
+#### 5.1.1spring cloud config部署及说明
+
+新建一个module
+
+![1574385814613](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1574385814613.png)
+
+![1574385828873](C:\Users\t460-14\AppData\Roaming\Typora\typora-user-images\1574385828873.png)
+
+然后开始编辑config server的配置文件。
+
+这就提到了了两种配置文件，一个是bootstrap.yml，一个是application.yml
+
+当使用spring cloud config server的时候，可以在bootstrap.yml中指定spring.application.name 和spring.cloud.config.server.git.uri以及一些加密的信息
+
+bootstrap.yml比application.yml更早加载，配置的更多的是不变的或者是不经常变化的属性，application属性文件可以配置更灵活的属性
+
+在普通服务中从配置中心服务加载配置文件，在bootstrap.yml配置如下：
+
+```
+spring:
+  application:
+    name: demo   #当前服务名称(这个可以放在application.yml里配置)
+  cloud:
+    config: #配置文件获取
+      uri: http://localhost:8040   #不使用服务发现（eureka等），则直接通过uri指定配置中心的地址
+      label: master         #github仓库的分支名(默认应该就是master，其他分支就在这指定)
+      name: config-file-name  #name指定想要从从配置中心加载的配置文件名，不用加后缀，获取多个则以逗号隔开
+```
+
+#### **5.1.2apollo部署及说明**
+
+
+
+### 5.2测试
