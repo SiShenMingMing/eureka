@@ -13,15 +13,19 @@ spring:
  cloud:
   config:
    server:
-#    native:
-#     search-locations: classpath:/config
-     git:
+    native:
+     # 读取本地的配置文件，在resource下
+     search-locations: classpath:properties/
+#   bootstrap: true
+#    git:
 #     #可以配置git地址、svn地址、本地地址
-      uri: https://rdc.hand-china.com/gitlab/15433/config1314.git
+#      uri: https://gitee.com/sishenmingming/test.git
+#      username: 2225754787@qq.com
+#      password: 5564100.jwt
 #      search-paths: config
-      default-label: master
-#     searchPaths: '{profile}'
+#      default-label: master
+#     searchPaths: respo
 #   label: master
-# profiles:
-#  active: native
+ profiles:
+  active: native
 

@@ -10,10 +10,10 @@
         <module name="gateway" />
         <module name="eureka-server" />
         <module name="consumer (2)" />
-        <module name="config" />
+        <module name="consumer" />
         <module name="eureka" />
         <module name="eureka-client2" />
-        <module name="consumer" />
+        <module name="config" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

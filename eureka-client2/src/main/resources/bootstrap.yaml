@@ -10,4 +10,10 @@ eureka:
 spring:
   application:
     name: eureka-peer-client2
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: spring-cloud-config
+      profile: base
 

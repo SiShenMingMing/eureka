@@ -15,5 +15,15 @@ public class HelloController {
     public String index(){
         return "Hello World!,端口："+port;
     }
+
+
+    @Value("${server.port}")  // 从对应的配置中心找到文件并把属性注入到value值中
+    private String value;
+
+    @RequestMapping("/hello")
+    public String hello() {
+        return "hello," + value;
+    }
+
 }
 

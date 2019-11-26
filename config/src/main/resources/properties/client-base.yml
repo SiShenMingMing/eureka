@@ -1,0 +1,31 @@
+
+server:
+  port: 3333
+eureka:
+  client:
+    service-url:
+      defaultZone: http://peer1:1111/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+spring:
+  application:
+    name: spring-cloud-config
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:properties/
+  #   bootstrap: true
+  #    git:
+  #     #可以配置git地址、svn地址、本地地址
+  #      uri: https://gitee.com/sishenmingming/test.git
+  #      username: 2225754787@qq.com
+  #      password: 5564100.jwt
+  #      search-paths: config
+  #      default-label: master
+  #     searchPaths: respo
+  #   label: master
+  profiles:
+    active: native
+
